@@ -24,7 +24,11 @@ setInterval(() => {
   for (const userid in user_cordinate) {
     if (Object.hasOwnProperty.call(user_cordinate, userid)) {
       const obj = user_cordinate[userid]
-      if (obj['kill']) {
+      if (
+        obj['kill'] ||
+        obj['username'] == 'null' ||
+        typeof obj['username'] == 'undefined'
+      ) {
         delete user_cordinate[userid]
       }
     }
