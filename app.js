@@ -56,7 +56,7 @@ app.post('/:userID', (req, res) => {
   }
 })
 
-app.listen(PORT, (e, a) => {
+app.listen(PORT, '0.0.0.0', (e, a) => {
   if (e) return console.log(e)
   console.log(a)
 })
