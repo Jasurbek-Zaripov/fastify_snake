@@ -1,0 +1,19 @@
+{
+  "name": "fastify_snake",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "restart": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^3.25.2",
+    "fastify-cors": "^6.0.2",
+    "fastify-static": "^4.5.0"
+  }
+}
