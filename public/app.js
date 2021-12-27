@@ -60,17 +60,20 @@ for (let i = 0; i <= playground_li; i++) {
 id_eat()
 
 //interaval for move ==================================================================
-let id = setInterval(() => {
+setInterval(() => {
   ilon_yurdimi = true
   if (LEFT) {
     y--
+    if (y < 0) y = playground_span
   } else if (RIGHT) {
     y++
+    if (y > playground_span) y = 0
   } else if (UP) {
     x--
+    if (x < 0) x = playground_li
   } else if (DOWN) {
     x++
-    ilon_yurdimi = true
+    if (x > playground_li) x = 0
   }
   move_snake()
 }, MOVE_SPEED)
@@ -130,11 +133,6 @@ body.addEventListener(
 //end event mobile ====================================================================
 
 async function move_snake() {
-  if (y > playground_span) y = 0
-  if (y < 0) y = playground_span
-  if (x > playground_li) x = 0
-  if (x < 0) x = playground_li
-
   //TO FINISH =====================================================
   if (
     li_group.children[x].children[y].style.backgroundColor &&
@@ -145,11 +143,9 @@ async function move_snake() {
     let ha = document.querySelector('#madal > div > div > b:nth-child(1)')
     let yoq = document.querySelector('#madal > div > div > b:nth-child(2)')
     madal.className = 'block'
-    ha.onclick = () => {
+    ha.onclick = async () => {
       madal.className = ''
-      geteway[MY_ID_TO_SNAKE]['kill'] = false
-      geteway[MY_ID_TO_SNAKE]['snake_cor'] = [0, 0]
-      geteway[MY_ID_TO_SNAKE]['snake_len'] = 1
+      await kill_snake(false, [0, 0])
     }
     yoq.onclick = () => {
       madal.className = ''
@@ -184,7 +180,6 @@ async function move_snake() {
 
   geteway = data
 
-  users_list.innerHTML = null
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   //all user cordinates
@@ -196,6 +191,7 @@ async function move_snake() {
     let [o, n] = obj_cordinate['snake_cor']
 
     if (users_list.classList.contains('block')) {
+      users_list.innerHTML = null
       let p = document.createElement('p')
       p.style.backgroundColor = '#' + key_user_id
       p.innerHTML =
@@ -224,12 +220,12 @@ async function move_snake() {
         li_group.children[+o].children[+n].textContent = null
       }
       li_group.children[+o].children[+n].className = 'snake_body'
-    }, MOVE_SPEED + 0.2)
+    }, MOVE_SPEED + 0.1)
     //cleaning after walking
     setTimeout(() => {
       li_group.children[+o].children[+n].className = ''
       li_group.children[+o].children[+n].style.backgroundColor = ''
-    }, (MOVE_SPEED + 0.5) * obj_cordinate['snake_len'])
+    }, MOVE_SPEED * obj_cordinate['snake_len'] + 0.2)
   }
 }
 
@@ -259,7 +255,9 @@ function gen_fun() {
 
 function TRUE_FALSE(key_code) {
   if (!ilon_yurdimi) return
+
   ilon_yurdimi = false
+
   if (key_code == 37) {
     if (RIGHT) return
 
@@ -286,9 +284,13 @@ function TRUE_FALSE(key_code) {
     RIGHT = false
   }
 }
+
 async function kill_snake(bool = true, cor = []) {
   geteway[MY_ID_TO_SNAKE]['kill'] = bool
   geteway[MY_ID_TO_SNAKE]['snake_cor'] = cor
+  if (!bool) {
+    geteway[MY_ID_TO_SNAKE]['snake_len'] = 1
+  }
   await fetch(`/${MY_ID_TO_SNAKE}`, {
     method: 'POST',
     headers: {
